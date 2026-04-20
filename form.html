@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Healthcare Claim Form</title>
+    <script>
+        function handleFormSubmit(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            // Get form values
+            const name = document.getElementById('name').value.trim();
+            const dob = document.getElementById('dob').value;
+            const claimAmount = document.getElementById('claim_amount').value.trim();
+            const procedureCode = document.getElementById('procedure_code').value.trim();
+            
+            // Basic validation
+            if (!name || !dob || !claimAmount || !procedureCode) {
+                alert('Please fill in all fields');
+                return false;
+            }
+            
+            // Create data object
+            const formData = {
+                patient_name: name,
+                date_of_birth: dob,
+                claim_amount: parseFloat(claimAmount),
+                procedure_code: procedureCode,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Convert to JSON string with proper formatting
+            const jsonData = JSON.stringify(formData, null, 2);
+            
+            // Create a blob and trigger download
+            const blob = new Blob([jsonData], {type: 'application/json;charset=utf-8'});
+            const url = URL.createObjectURL(blob);
+            
+            // Create a link element
+            const a = document.createElement('a');
+            a.href = url;
+            // Generate filename with timestamp
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            a.download = `healthcare_claim_output_${timestamp}.json`;
+            
+            // Append to body and click
+            document.body.appendChild(a);
+            a.click();
+            
+            // Clean up
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            // Show success message
+            showSuccessMessage('Form data saved successfully!');
+            
+            // Reset form after a brief delay
+            setTimeout(() => {
+                document.getElementById('claimForm').reset();
+                hideSuccessMessage();
+            }, 1500);
+            
+            return false;
+        }
+        
+        function showSuccessMessage(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            successDiv.style.opacity = '1';
+        }
+        
+        function hideSuccessMessage() {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.style.opacity = '0';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 300);
+        }
+        
+        // Handle Enter key press in form fields
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('claimForm');
+            form.addEventListener('submit', handleFormSubmit);
+            
+            // Optional: Add real-time validation or other enhancements
+            const inputs = form.querySelectorAll('input[required]');
+            inputs.forEach(input => {
+                input.addEventListener('invalid', function(e) {
+                    e.preventDefault();
+                    this.style.borderColor = '#ff0000';
+                });
+                input.addEventListener('input', function() {
+                    this.style.borderColor = '';
+                });
+            });
+        });
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        input[type="submit"] {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            font-weight: 600;
+        }
+        input[type="submit"]:hover {
+            background-color: #219a52;
+        }
+        input[type="submit"]:active {
+            background-color: #1e8449;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 20px;
+            border: 1px solid #c3e6cb;
+            display: none;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            font-weight: 500;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Healthcare Claim Form</h2>
+        <form id="claimForm" novalidate>
+            <div class="form-group">
+                <label for="name">Patient Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter full name" required>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" name="dob" required>
+            </div>
+            <div class="form-group">
+                <label for="claim_amount">Claim Amount:</label>
+                <input type="number" id="claim_amount" name="claim_amount" step="0.01" min="0" placeholder="Enter amount" required>
+            </div>
+            <div class="form-group">
+                <label for="procedure_code">Procedure Code:</label>
+                <input type="text" id="procedure_code" name="procedure_code" placeholder="Enter procedure code (e.g., CPT99213)" required>
+            </div>
+            <input type="submit" value="Submit & Save Data">
+        </form>
+        <div id="successMessage" class="success-message">Form data saved successfully!</div>
+    </div>
+</body>
+</html>

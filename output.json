@@ -1,0 +1,7 @@
+{
+  "patient_name": "John Doe",
+  "date_of_birth": "1980-05-15",
+  "claim_amount": 2500.5,
+  "procedure_code": "CPT99213",
+  "timestamp": "2026-04-20T22:18:55Z"
+}

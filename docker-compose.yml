@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  healthcare-rpa-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - FHIR_SERVER_URL=https://hapi.fhir.org/baseR4
+    volumes:
+      - ./data.csv:/app/data.csv
+      - ./form.html:/app/form.html
