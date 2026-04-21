@@ -1,6 +1,6 @@
 # Healthcare RPA Automation Tool
 
-A Python-based healthcare automation tool that combines Robotic Process Automation (RPA) with a RESTful API to automate healthcare claim form submissions. The tool uses Selenium for browser automation and FastAPI to provide a clean interface for triggering automation workflows and fetching patient data from FHIR servers.
+A Python-based healthcare automation tool that combines Robotic Process Automation (RPA) with a RESTful API to automate healthcare claim form submissions. The tool uses Selenium for browser automation and API to provide a clean interface for triggering automation workflows and fetching patient data from FHIR servers.
 
 ## How It Works
 
@@ -22,7 +22,7 @@ The system operates in two main modes:
 ## Features
 
 - **RPA Automation**: Uses Selenium to automate filling and submitting a healthcare claim form with real patient data
-- **FastAPI Wrapper**: Provides RESTful endpoints to trigger automation workflows and fetch patient data
+- **FastAPI**: Provides RESTful endpoints to trigger automation workflows and fetch patient data
 - **Dockerized**: Easy deployment with Docker and docker-compose for consistent environments
 - **FHIR Integration**: Fetches patient data from a public FHIR server (HAPI FHIR) for realistic data handling
 - **Healthcare Focus**: Designed specifically for healthcare data automation scenarios (note: not HIPAA compliant for production use)
@@ -61,7 +61,7 @@ The system operates in two main modes:
    pip install -r requirements.txt
    ```
 
-3. Run the FastAPI application:
+3. Run the API application:
    ```bash
    uvicorn main:app --host 0.0.0.0 --port 8000
    ```
