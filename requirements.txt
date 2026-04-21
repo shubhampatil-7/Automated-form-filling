@@ -5,3 +5,4 @@ pandas
 fhirpy
 python-dotenv
 webdriver-manager
+opencv-python>=4.5.0

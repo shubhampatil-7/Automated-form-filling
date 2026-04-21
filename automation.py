@@ -1,11 +1,43 @@
 import os
 import time
 import pandas as pd
+import cv2
+import numpy as np
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
+
+def process_form_screenshot(screenshot_path, output_path=None):
+    """
+    Process form screenshot for verification/debugging
+    Returns processed image or None if failed
+    """
+    try:
+        # Read image
+        img = cv2.imread(screenshot_path)
+        if img is None:
+            return None
+        
+        # Convert to grayscale
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        
+        # Apply thresholding to enhance text/fields
+        _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY_INV)
+        
+        # Optional: Apply morphological operations to clean up
+        kernel = np.ones((2,2), np.uint8)
+        processed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+        
+        # Save if output path provided
+        if output_path:
+            cv2.imwrite(output_path, processed)
+        
+        return processed
+    except Exception as e:
+        print(f"Error processing screenshot: {e}")
+        return None
 
 def run_automation():
     try:
@@ -14,7 +46,7 @@ def run_automation():
         if df.empty:
             return {"status": "error", "message": "No data found in data.csv"}
         
-       
+        
         row = df.iloc[0]
         patient_name = row['patient_name']
         date_of_birth = row['date_of_birth']
@@ -48,6 +80,19 @@ def run_automation():
         # Submit the form
         driver.find_element(By.CSS_SELECTOR, "input[type='submit']").click()
         time.sleep(2)  # Wait for submission to process
+
+        # Take screenshot of submitted form for verification
+        screenshot_path = "form_submission.png"
+        driver.save_screenshot(screenshot_path)
+        
+        # Process screenshot with OpenCV for verification
+        processed_img = process_form_screenshot(screenshot_path, "form_submission_processed.png")
+        
+        # Log basic info for verification
+        if processed_img is not None:
+            print(f"Form verification: Processed image shape {processed_img.shape}")
+        else:
+            print("Warning: Could not process form screenshot")
 
         # Close the driver
         driver.quit()

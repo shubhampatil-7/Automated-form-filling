@@ -27,6 +27,8 @@ The system operates in two main modes:
 - **FHIR Integration**: Fetches patient data from a public FHIR server (HAPI FHIR) for realistic data handling
 - **Healthcare Focus**: Designed specifically for healthcare data automation scenarios (note: not HIPAA compliant for production use)
 - **Interactive Documentation**: Automatic Swagger UI generation for easy API exploration
+- **OpenCV Document Processing**: Uses OpenCV to process form submission screenshots for verification and debugging, enabling visual validation of automation success
+- **OpenCV Document Processing**: Uses OpenCV to process form submission screenshots for verification and debugging
 
 ## Project Structure
 
